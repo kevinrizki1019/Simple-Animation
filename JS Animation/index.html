@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>JS Animation</title>
+</head>
+
+<body>
+
+    <h1>Fortune Teller</h1>
+
+    <p>Think of a YES-or-NO question, and click 'Tell Fortune' to get the answer</p>
+
+    <button onclick="tell_fortune()">Tell Fortune</button>
+
+    <p>
+        Answer: <span id="answer"><span>
+    </p>
+
+    <hr>
+
+    <h1>Stopwatch</h1>
+
+    <button onclick="start()" id="start_button">Start</button>
+
+    <button onclick="stop()">Stop</button>
+
+    <button onclick="reset()">Reset</button>  
+
+    <div id="time">0</div>
+
+    <hr>
+
+    <h1>Animation</h1>
+
+    <img src="passage_1.png" id="passage">
+
+    <img src="hero.png" id="hero" onclick="start_moving()">
+
+    <div id="message_box">Click on the hero to make him move.</div>
+
+    <style>
+        body, button {
+            font-size: 25px;
+        }
+
+        #time {
+            font-size: 100px;
+        }
+
+        #hero {
+            position: absolute;
+            top: 860px;
+            left: 0;
+        }
+
+        #passage {
+            position: absolute;
+            top: 700px;
+            left: 5px;
+        }
+
+        #message_box {
+            position: absolute;
+            top: 725px;
+            left: 200px;
+            width: 500px;
+            padding: 25px 25px 25px 25px;
+            color: white;
+            background-color: rgba(0,0,110,.8);
+            border: 2px solid white;
+            border-radius: 15px 15px 15px 15px;
+        }
+
+    </style>
+
+    <script>
+
+        var tell_fortune = function () {
+            var random_number = Math.random() * 2;
+
+            random_number = Math.round(random_number);
+
+            console.log(random_number);
+
+            var answer = '';
+
+            if (random_number == 2) {
+                answer = 'YES!';
+            } 
+            else if (random_number == 1) {
+                answer = 'MAYBE..';
+            } 
+            else {
+                answer = 'NO!';
+            }
+
+            document.getElementById('answer').innerHTML = answer;
+        }
+
+        var time = 0;
+
+        var count_up = function () {
+            if (keep_counting) {                
+                time = time + 1;
+
+                document.getElementById('time').innerHTML = time;
+
+                setTimeout(count_up, 100);
+            } 
+            else {
+                keep_counting = true;
+
+                document.getElementById('start_button').disabled = false;
+            }
+        }
+
+        var start = function(){
+            document.getElementById('start_button').disabled = true
+
+            count_up();
+        }
+
+        var keep_counting = true;
+
+        var stop = function() {
+            keep_counting = false;
+        }
+
+        var reset = function() {
+            time = 0;
+
+            document.getElementById('time').innerHTML = time;
+        }
+
+        var hero = document.getElementById('hero');
+
+        var left = 0;
+
+        var step_num = 1;
+
+        var step_sound = new Audio('203041__jjhouse4__boots-and-spurs_step.mp3');
+
+        step_sound.volume = .5;
+
+        var message_box = document.getElementById('message_box');
+
+        var move_hero = function(){
+            left = left + 20;
+            
+            if ( left >= 110 ) {
+                message_box.innerHTML = "The door is locked, but it's old and rotten. You might be able to break it with your sword.";
+
+                message_box.style.display = '';
+                
+                hero.src = 'hero.png';
+                
+                return;
+            }
+
+            if ( step_num > 8 ) {
+                step_num = 1;
+            }
+
+            if ( step_num == 1 || step_num == 5 ) {
+                step_sound.currentTime = 0;
+
+                step_sound.play();
+            }
+
+            document.getElementById('hero').style.left = left + 'px';
+
+            document.getElementById('hero').src = 'hero_walking_'+step_num+'.png';
+
+            step_num = step_num + 1;
+
+            setTimeout(move_hero,100);
+        }
+
+        var start_moving = function(){
+            message_box.style.display = 'none';
+
+            move_hero();
+            
+        }
+
+    </script>
+
+</body>
+
+</html>
